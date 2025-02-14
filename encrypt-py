@@ -1,0 +1,48 @@
+from cryptography.fernet import Fernet
+
+# Gerar uma chave para criptografia
+def generate_key():
+    key = Fernet.generate_key()
+    with open("secret.key", "wb") as key_file:
+        key_file.write(key)
+
+# Carregar a chave de criptografia
+def load_key():
+    return open("secret.key", "rb").read()
+
+# Função para criptografar um arquivo
+def encrypt_file(file_name):
+    key = load_key()
+    fernet = Fernet(key)
+
+    with open(file_name, "rb") as file:
+        file_data = file.read()
+
+    encrypted_data = fernet.encrypt(file_data)
+
+    with open(file_name + ".enc", "wb") as file:
+        file.write(encrypted_data)
+    
+    print(f"Arquivo {file_name} criptografado com sucesso!")
+
+# Função para descriptografar um arquivo
+def decrypt_file(file_name):
+    key = load_key()
+    fernet = Fernet(key)
+
+    with open(file_name, "rb") as file:
+        encrypted_data = file.read()
+
+    decrypted_data = fernet.decrypt(encrypted_data)
+
+    with open(file_name.replace(".enc", ""), "wb") as file:
+        file.write(decrypted_data)
+    
+    print(f"Arquivo {file_name} descriptografado com sucesso!")
+
+# Gerar chave se necessário
+# generate_key()
+
+# Exemplo de uso
+encrypt_file("exemplo.txt")  # Substitua pelo arquivo que deseja criptografar
+decrypt_file("exemplo.txt.enc")
